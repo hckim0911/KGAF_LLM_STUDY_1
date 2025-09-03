@@ -73,11 +73,11 @@ AI가 자동으로 **요약·키워드 추출·주제 분류**를 수행합니�
 
 - **프론트엔드 (UI)**  
   사용자가 영상을 재생하고 채팅을 입력하는 인터페이스  
-  - GitHub: `video_chat_test`, `google_login_test`  
+  - GitHub: `video_chat_test(https://github.com/JaeHyeon-KAIST/video_chat_test/)`, `google_login_test(https://github.com/JaeHyeon-KAIST/google_login_test)`  
 
 - **백엔드 (API)**  
   데이터 저장, RAG 파이프라인, 검색 로직을 처리하는 API 서버  
-  - GitHub: `multimodal-mongodb-retrieval-system`  
+  - GitHub: `multimodal-mongodb-retrieval-system(https://github.com/a2ran/multimodal-mongodb-retrieval-system)`  
 
 - **AI 모델**  
   멀티모달 데이터(이미지 프레임·텍스트) 임베딩, LangChain 기반 RAG 파이프라인  
