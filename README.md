@@ -93,34 +93,17 @@ AI가 자동으로 **요약·키워드 추출·주제 분류**를 수행합니�
   - Local LLM Framework: Ollama, LM Studio  
   - Multimodal Model: CLIP, Sentence-Transformers  
   - LLM Application Framework: LangChain  
-- **API**: OpenAI API (초기 개발 단계에서 활용)  
+- **API**: OpenAI API 
 
 ---
 
 ## 🚀 설치 및 실행
 
 ### Backend
-```bash
-# 저장소 클론
-git clone https://github.com/a2ran/multimodal-mongodb-retrieval-system.git
-cd multimodal-mongodb-retrieval-system
 
-# 가상환경 & 패키지 설치
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# MongoDB 실행 (Docker 예시)
-docker run -d --name mongodb -p 27017:27017 mongo:7.0
-
-# API 서버 실행
-uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-Swagger UI: http://localhost:8000/docs
 
 ### Frontend
-*(추후 작성 예정: React 앱 실행 방법 추가)*
+
 
 ---
 
