@@ -125,9 +125,8 @@ Swagger UI: http://localhost:8000/docs
 ---
 
 ## 👥 팀 구성원
-
-- **Hyeongcheol Kim**: Project Lead  
-- **이재현**: Frontend, System Management  
+- **이재현**: PL, Frontend, System Management  
 - **조의현**: Backend, AI Model  
 - **송민근**: Documentation
-- **Geena Kim**  ㅌ`
+- **Geena Kim**  System Argorithm Design
+- **Hyeongcheol Kim**: Something else
