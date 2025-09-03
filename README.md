@@ -14,8 +14,8 @@
 AI가 자동으로 **요약·키워드 추출·주제 분류**를 수행합니다.  
 단순 저장이 아니라 **지식 단위로 체계화**되므로, 시간이 지나도 **영상 장면·프레임·채팅 로그와 함께 맥락적으로 검색**할 수 있습니다.  
 
-개발 과정에서 우리는 **멀티모달 임베딩(CLIP + 텍스트 모델)**, **벡터 DB(MongoDB)**, **LangChain 기반 RAG 파이프라인**을 실제로 다뤄보며  
-“사용자 경험(UX) 설계에서 입력 장벽을 낮추는 것”의 중요성 또한 배웠습니다.  
+개발 과정에서 **멀티모달 임베딩(CLIP + 텍스트 모델)**, **벡터 DB(MongoDB)**, **LangChain 기반 RAG 파이프라인**을 실제로 다뤄보며  
+“사용자 경험(UX) 설계에서 입력 장벽을 낮추는 것”의 중요성을 배웠습니다.  
 
 ---
 
@@ -73,11 +73,12 @@ AI가 자동으로 **요약·키워드 추출·주제 분류**를 수행합니�
 
 - **프론트엔드 (UI)**  
   사용자가 영상을 재생하고 채팅을 입력하는 인터페이스  
-  - GitHub: `video_chat_test(https://github.com/JaeHyeon-KAIST/video_chat_test/)`, `google_login_test(https://github.com/JaeHyeon-KAIST/google_login_test)`  
+  - GitHub: [video_chat_test](https://github.com/JaeHyeon-KAIST/video_chat_test/)  
+  - GitHub: [google_login_test](https://github.com/JaeHyeon-KAIST/google_login_test)
 
 - **백엔드 (API)**  
   데이터 저장, RAG 파이프라인, 검색 로직을 처리하는 API 서버  
-  - GitHub: `multimodal-mongodb-retrieval-system(https://github.com/a2ran/multimodal-mongodb-retrieval-system)`  
+  - GitHub: [multimodal-mongodb-retrieval-system](https://github.com/a2ran/multimodal-mongodb-retrieval-system)
 
 - **AI 모델**  
   멀티모달 데이터(이미지 프레임·텍스트) 임베딩, LangChain 기반 RAG 파이프라인  
@@ -88,7 +89,7 @@ AI가 자동으로 **요약·키워드 추출·주제 분류**를 수행합니�
 
 - **Frontend**: React.js, JavaScript, CSS  
 - **Backend**: Python, FastAPI  
-- **Database**: MongoDB (Vector DB), 필요 시 RDBMS 병행  
+- **Database**: MongoDB (Vector DB)
 - **AI / LLM**  
   - Local LLM Framework: Ollama, LM Studio  
   - Multimodal Model: CLIP, Sentence-Transformers  
