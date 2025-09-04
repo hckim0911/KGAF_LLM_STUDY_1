@@ -1,20 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { AuthProvider } from './utils/authContext';
+import AppRouter from './router/AppRouter';
+import styles from './App.module.css';
 
-function App() {
+function App({ authProviderProps, appRouterProps, onAppMount }) {
+  React.useEffect(() => {
+    if (onAppMount) {
+      onAppMount();
+    }
+  }, [onAppMount]);
+
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a className='App-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider {...authProviderProps}>
+      <div className={styles.app}>
+        <AppRouter {...appRouterProps} />
+      </div>
+    </AuthProvider>
   );
 }
+
+App.propTypes = {
+  authProviderProps: PropTypes.object,
+  appRouterProps: PropTypes.object,
+  onAppMount: PropTypes.func,
+};
 
 export default App;

@@ -1,0 +1,95 @@
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.dashboard {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+  color: white;
+  padding: 25px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.content {
+  padding: 40px 30px;
+}
+
+.welcomeSection {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  border-left: 4px solid #4285f4;
+}
+
+.welcomeTitle {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.welcomeText {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.customContent {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+    align-items: stretch;
+  }
+
+  .dashboard {
+    margin: 0;
+  }
+
+  .header {
+    padding: 20px;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .headerTitle {
+    font-size: 20px;
+  }
+
+  .content {
+    padding: 30px 20px;
+  }
+
+  .welcomeTitle {
+    font-size: 20px;
+  }
+}
