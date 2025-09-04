@@ -1,0 +1,123 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  padding: 20px;
+}
+
+.errorBox {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.title {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.reloadButton {
+  background: #4285f4;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reloadButton:hover {
+  background: #3367d6;
+}
+
+.errorDetails {
+  text-align: left;
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.errorSummary {
+  background: #f5f5f5;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+}
+
+.errorSummary:hover {
+  background: #eeeeee;
+}
+
+.errorContent {
+  padding: 16px;
+  background: #fafafa;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.errorContent h4 {
+  margin: 15px 0 8px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.errorContent h4:first-child {
+  margin-top: 0;
+}
+
+.errorContent pre {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 480px) {
+  .errorBox {
+    padding: 30px 20px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+}
