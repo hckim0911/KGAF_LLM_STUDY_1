@@ -1,5 +1,7 @@
 // Google 로그인 관련 유틸리티 함수들
 
+import { login } from '../api/auth';
+
 export const initializeGoogleLogin = (onResponse) => {
   // Google API 스크립트가 이미 로드되었는지 확인
   if (!window.google) {
@@ -40,11 +42,10 @@ const setupGoogleLogin = (onResponse) => {
   }
 };
 
-export const handleGoogleResponse = (response, loginCallback) => {
+export const handleGoogleResponse = async (response, loginCallback) => {
   if (response.credential) {
     try {
-      // JWT 토큰 디코드 (실제 운영에서는 서버에서 검증해야 함)
-      const decoded = parseJWT(response.credential);
+      const decoded = await login(response.credential);
 
       const userData = {
         id: decoded.sub,
@@ -59,24 +60,5 @@ export const handleGoogleResponse = (response, loginCallback) => {
       console.error('Google 로그인 처리 중 오류:', error);
       alert('로그인 중 오류가 발생했습니다.');
     }
-  }
-};
-
-// JWT 토큰 파싱 (클라이언트 사이드에서 표시용으로만 사용)
-const parseJWT = (token) => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    throw new Error('Invalid JWT token');
   }
 };

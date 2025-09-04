@@ -1,0 +1,51 @@
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.bounce1 {
+  animation-delay: -0.32s;
+}
+
+.bounce2 {
+  animation-delay: -0.16s;
+}
+
+.bounce3 {
+  animation-delay: 0s;
+}
+
+.container {
+  display: flex;
+}
+
+.bubble {
+  max-width: 75%;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #6b7280;
+  border-radius: 50%;
+  animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.text {
+  font-size: 14px;
+  margin-left: 8px;
+}

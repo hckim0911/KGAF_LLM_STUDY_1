@@ -1,29 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { AuthProvider } from './utils/authContext';
 import AppRouter from './router/AppRouter';
 import styles from './App.module.css';
 
-function App({ authProviderProps, appRouterProps, onAppMount }) {
-  React.useEffect(() => {
-    if (onAppMount) {
-      onAppMount();
-    }
-  }, [onAppMount]);
+const onLoginSuccess = () => {
+  console.log('로그인 성공');
+};
 
+const onLogoutSuccess = () => {
+  console.log('로그아웃 성공');
+};
+
+function App() {
   return (
-    <AuthProvider {...authProviderProps}>
+    <AuthProvider onLoginSuccess={onLoginSuccess} onLogoutSuccess={onLogoutSuccess}>
       <div className={styles.app}>
-        <AppRouter {...appRouterProps} />
+        <AppRouter />
       </div>
     </AuthProvider>
   );
 }
-
-App.propTypes = {
-  authProviderProps: PropTypes.object,
-  appRouterProps: PropTypes.object,
-  onAppMount: PropTypes.func,
-};
 
 export default App;

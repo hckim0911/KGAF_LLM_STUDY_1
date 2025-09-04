@@ -11,12 +11,12 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children, storageKeys, onLoginSuccess, onLogoutSuccess, initialLoading }) => {
+export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initialLoading }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(initialLoading);
 
-  const tokenKey = storageKeys?.token || 'google_token';
-  const userDataKey = storageKeys?.userData || 'user_data';
+  const tokenKey = 'google_token';
+  const userDataKey = 'user_data';
 
   useEffect(() => {
     // 페이지 로드 시 기존 로그인 상태 확인
@@ -77,10 +77,6 @@ export const AuthProvider = ({ children, storageKeys, onLoginSuccess, onLogoutSu
 
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
-  storageKeys: PropTypes.shape({
-    token: PropTypes.string,
-    userData: PropTypes.string,
-  }),
   onLoginSuccess: PropTypes.func,
   onLogoutSuccess: PropTypes.func,
   initialLoading: PropTypes.bool,

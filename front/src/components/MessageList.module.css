@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+}
+
+.user {
+  justify-content: flex-end;
+}
+
+.ai {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 75%;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.userBubble {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.aiBubble {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.text {
+  font-size: 14px;
+  margin: 0;
+}
+
+.timestamp {
+  font-size: 12px;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+.userTimestamp {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aiTimestamp {
+  color: #6b7280;
+}
