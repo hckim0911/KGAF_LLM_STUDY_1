@@ -1,5 +1,6 @@
 # Intellij
 /.idea/*
+*.iml
 
 # VS Code
 /.vscode/*
