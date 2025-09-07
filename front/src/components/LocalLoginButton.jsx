@@ -8,7 +8,7 @@ const LocalLoginButton = () => {
 
   const handleLocalLogin = () => {
     if (userId.trim()) {
-      login(userId, 'local_user', `${userId}@local.com`);
+      login(userId, userId, `${userId}@local.com`);
     }
   };
 
