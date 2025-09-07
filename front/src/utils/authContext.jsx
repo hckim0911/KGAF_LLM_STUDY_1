@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { setUserForApiRequests } from '../api/axiosInstance';
 
 const AuthContext = createContext();
 
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
       try {
         const parsedUserData = JSON.parse(userData);
         setUser(parsedUserData);
+        setUserForApiRequests(parsedUserData);
         if (onLoginSuccess) {
           onLoginSuccess(parsedUserData, token);
         }
@@ -42,6 +44,7 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
   const login = (id, name, email, token = 'local_token') => {
     const userData = { id, name, email };
     setUser(userData);
+    setUserForApiRequests(userData);
     localStorage.setItem(tokenKey, token);
     localStorage.setItem(userDataKey, JSON.stringify(userData));
 
@@ -53,6 +56,7 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
   const logout = () => {
     const currentUserData = user;
     setUser(null);
+    setUserForApiRequests(null);
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userDataKey);
 
