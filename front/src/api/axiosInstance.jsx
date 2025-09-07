@@ -7,7 +7,8 @@ const api = axios.create({
 
 // 요청 인터셉터 (예: 토큰 자동 주입)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('auth_token');
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
