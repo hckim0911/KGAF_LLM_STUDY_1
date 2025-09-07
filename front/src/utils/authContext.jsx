@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { setUserForApiRequests } from '../api/axiosInstance';
 
 const AuthContext = createContext();
 
@@ -15,7 +16,7 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(initialLoading);
 
-  const tokenKey = 'google_token';
+  const tokenKey = 'auth_token';
   const userDataKey = 'user_data';
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
       try {
         const parsedUserData = JSON.parse(userData);
         setUser(parsedUserData);
+        setUserForApiRequests(parsedUserData);
         if (onLoginSuccess) {
           onLoginSuccess(parsedUserData, token);
         }
@@ -39,8 +41,10 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
     setLoading(false);
   }, [tokenKey, userDataKey, onLoginSuccess]);
 
-  const login = (userData, token) => {
+  const login = (id, name, email, token = 'local_token') => {
+    const userData = { id, name, email };
     setUser(userData);
+    setUserForApiRequests(userData);
     localStorage.setItem(tokenKey, token);
     localStorage.setItem(userDataKey, JSON.stringify(userData));
 
@@ -50,18 +54,19 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
   };
 
   const logout = () => {
-    const currentUser = user;
+    const currentUserData = user;
     setUser(null);
+    setUserForApiRequests(null);
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userDataKey);
 
-    // Google 로그아웃
-    if (window.google?.accounts?.id) {
+    // Google 로그아웃 (구글 로그인을 사용한 경우에만)
+    if (window.google?.accounts?.id && localStorage.getItem(tokenKey) !== 'local_token') {
       window.google.accounts.id.disableAutoSelect();
     }
 
     if (onLogoutSuccess) {
-      onLogoutSuccess(currentUser);
+      onLogoutSuccess(currentUserData);
     }
   };
 
