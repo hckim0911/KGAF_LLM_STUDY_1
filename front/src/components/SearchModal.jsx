@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Search, X } from 'lucide-react';
 import styles from './SearchModal.module.css';
 import { searchConversations } from '../api/conversation';
+import { searchRAG } from '../api/rag';
 
 const SearchModal = ({ onClose }) => {
   const [query, setQuery] = useState('');
@@ -11,7 +12,7 @@ const SearchModal = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // API 호출 함수
+  // 통합 검색 함수
   const performSearch = async () => {
     if (!query.trim()) {
       alert('검색 쿼리를 입력해주세요.');
@@ -23,8 +24,19 @@ const SearchModal = ({ onClose }) => {
     setResults(null);
 
     try {
-      const data = await searchConversations(query, topK);
-      setResults(data);
+      // 대화 검색과 RAG 검색을 병렬로 수행
+      const [conversationResults, ragResults] = await Promise.allSettled([
+        searchConversations(query, topK),
+        searchRAG(query, topK, null, 0.4) // threshold 0.4 적용
+      ]);
+
+      const results = {
+        query,
+        conversations: conversationResults.status === 'fulfilled' ? conversationResults.value : { results: [] },
+        rag: ragResults.status === 'fulfilled' ? ragResults.value : { results: [] }
+      };
+
+      setResults(results);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
       console.error('검색 오류:', err);
@@ -33,11 +45,12 @@ const SearchModal = ({ onClose }) => {
     }
   };
 
+
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h3 className={styles.title}>Conversation Search Test</h3>
+          <h3 className={styles.title}>DB검색</h3>
           <button onClick={onClose} className={styles.closeButton}>
             <X size={20} />
           </button>
@@ -46,8 +59,8 @@ const SearchModal = ({ onClose }) => {
         <div className={styles.content}>
           {/* 검색 입력 영역 */}
           <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>대화 검색</h4>
-            <p className={styles.modeDescription}>저장된 대화(질문/답변)를 검색합니다.</p>
+            <h4 className={styles.sectionTitle}>DB검색</h4>
+            <p className={styles.modeDescription}>저장된 대화와 RAG 문서를 검색합니다.</p>
 
             {/* 텍스트 입력 */}
             <div className={styles.inputGroup}>
@@ -113,7 +126,10 @@ const SearchModal = ({ onClose }) => {
             <div className={styles.section}>
               <div className={styles.resultHeader}>
                 <h4 className={styles.sectionTitle}>검색 결과</h4>
-                <span className={styles.resultCount}>총 {results.results?.length || 0}개 결과</span>
+                <span className={styles.resultCount}>
+                  대화: {results.conversations?.results?.length || 0}개, 
+                  RAG: {results.rag?.results?.length || 0}개
+                </span>
               </div>
 
               {/* 쿼리 정보 */}
@@ -121,61 +137,90 @@ const SearchModal = ({ onClose }) => {
                 <strong>검색 쿼리:</strong> {query}
               </div>
 
-              {/* 결과 목록 */}
-              <div className={styles.resultsList}>
-                {results.results?.map((result, index) => (
-                  <div key={index} className={styles.resultItem}>
-                    <div className={styles.resultContent}>
-                      {/* 대화 검색 결과 표시 */}
-                      <div className={styles.resultInfo}>
-                        <div className={styles.resultMeta}>
-                          <span className={styles.score}>스코어: {(result.score * 100).toFixed(1)}%</span>
-                          <span className={styles.contentType}>대화</span>
-                        </div>
-
-                        {/* 질문 */}
-                        <div className={styles.conversationQuestion}>
-                          <strong>Q:</strong> {result.question}
-                        </div>
-
-                        {/* 질문 이미지가 있으면 표시 */}
-                        {result.question_image && (
-                          <div className={styles.questionImage}>
-                            <img
-                              src={result.question_image}
-                              alt='질문 관련 이미지'
-                              className={styles.conversationImagePreview}
-                              onError={(e) => {
-                                console.error('Error loading conversation image');
-                                e.target.style.display = 'none';
-                              }}
-                            />
+              {/* 대화 검색 결과 */}
+              {results.conversations?.results?.length > 0 && (
+                <div className={styles.resultCategory}>
+                  <h5>💬 대화 검색 결과</h5>
+                  <div className={styles.resultsList}>
+                    {results.conversations.results.map((result, index) => (
+                      <div key={`conv-${index}`} className={styles.resultItem}>
+                        <div className={styles.resultContent}>
+                          <div className={styles.resultInfo}>
+                            <div className={styles.resultMeta}>
+                              <span className={styles.score}>스코어: {(result.score * 100).toFixed(1)}%</span>
+                              <span className={styles.contentType}>대화</span>
+                            </div>
+                            <div className={styles.conversationQuestion}>
+                              <strong>Q:</strong> {result.question}
+                            </div>
+                            {result.question_image && (
+                              <div className={styles.questionImage}>
+                                <img
+                                  src={result.question_image}
+                                  alt='질문 관련 이미지'
+                                  className={styles.conversationImagePreview}
+                                  onError={(e) => {
+                                    console.error('Error loading conversation image');
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              </div>
+                            )}
+                            <div className={styles.conversationAnswer}>
+                              <strong>A:</strong> {result.answer}
+                            </div>
                           </div>
-                        )}
-
-                        {/* 답변 */}
-                        <div className={styles.conversationAnswer}>
-                          <strong>A:</strong> {result.answer}
                         </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-                        {/* 메타데이터 */}
-                        {result.metadata && (
-                          <div className={styles.metadata}>
-                            {result.metadata.timestamp && (
-                              <p>
-                                <strong>타임스탬프:</strong> {result.metadata.timestamp}
-                              </p>
+              {/* RAG 검색 결과 */}
+              {results.rag?.results?.length > 0 && (
+                <div className={styles.resultCategory}>
+                  <h5>📄 RAG 문서 검색 결과</h5>
+                  <div className={styles.resultsList}>
+                    {results.rag.results.map((result, index) => (
+                      <div key={`rag-${index}`} className={styles.resultItem}>
+                        <div className={styles.resultContent}>
+                          <div className={styles.resultInfo}>
+                            <div className={styles.resultMeta}>
+                              <span className={styles.score}>스코어: {(result.score * 100).toFixed(1)}%</span>
+                              <span className={styles.contentType}>{result.content_type}</span>
+                            </div>
+                            {result.text_content && (
+                              <div className={styles.textContent}>
+                                <strong>텍스트:</strong> {result.text_content}
+                              </div>
+                            )}
+                            {result.image_path && (
+                              <div className={styles.imagePreview}>
+                                <strong>이미지:</strong>
+                                <img
+                                  src={`http://localhost:8000/uploads/${result.image_path.split('/').pop()}`}
+                                  alt='RAG 문서 이미지'
+                                  className={styles.ragImagePreview}
+                                  onError={(e) => {
+                                    console.error('Error loading RAG image');
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              </div>
                             )}
                           </div>
-                        )}
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
               {/* 결과가 없는 경우 */}
-              {results.results?.length === 0 && <div className={styles.noResults}>검색 결과가 없습니다.</div>}
+              {(!results.conversations?.results?.length && !results.rag?.results?.length) && (
+                <div className={styles.noResults}>검색 결과가 없습니다.</div>
+              )}
             </div>
           )}
         </div>

@@ -6,9 +6,9 @@ const LocalLoginButton = () => {
   const [userId, setUserId] = useState('');
   const { login } = useAuth();
 
-  const handleLocalLogin = () => {
+  const handleLocalLogin = async () => {
     if (userId.trim()) {
-      login(userId, 'local_user', `${userId}@local.com`);
+      await login(userId, userId, `${userId}@local.com`);
     }
   };
 

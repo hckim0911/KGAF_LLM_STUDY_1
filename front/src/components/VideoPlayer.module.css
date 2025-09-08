@@ -43,6 +43,14 @@
   padding: 12px;
   background-color: #f3f4f6;
   border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.fileDetails {
+  flex: 1;
 }
 
 .detail {
@@ -51,9 +59,9 @@
   margin: 4px 0;
 }
 
-.controls {
+.playButtonContainer {
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 
 .playButton {
@@ -62,11 +70,13 @@
   gap: 8px;
   background-color: #3b82f6;
   color: white;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 .playButton:hover {

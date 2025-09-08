@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { setUserForApiRequests } from '../api/axiosInstance';
+import { loginUser } from '../api/auth';
 
 const AuthContext = createContext();
 
@@ -12,7 +13,7 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initialLoading }) => {
+export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initialLoading = true }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(initialLoading);
 
@@ -41,15 +42,32 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
     setLoading(false);
   }, [tokenKey, userDataKey, onLoginSuccess]);
 
-  const login = (id, name, email, token = 'local_token') => {
+  const login = async (id, name, email, token = 'local_token') => {
     const userData = { id, name, email };
-    setUser(userData);
-    setUserForApiRequests(userData);
-    localStorage.setItem(tokenKey, token);
-    localStorage.setItem(userDataKey, JSON.stringify(userData));
+    
+    try {
+      // 백엔드에 로그인 정보 전송
+      await loginUser(id, name, email);
+      
+      setUser(userData);
+      setUserForApiRequests(userData);
+      localStorage.setItem(tokenKey, token);
+      localStorage.setItem(userDataKey, JSON.stringify(userData));
 
-    if (onLoginSuccess) {
-      onLoginSuccess(userData, token);
+      if (onLoginSuccess) {
+        onLoginSuccess(userData, token);
+      }
+    } catch (error) {
+      console.error('Backend login failed:', error);
+      // 백엔드 로그인 실패시에도 프론트엔드에서는 로그인 상태 유지
+      setUser(userData);
+      setUserForApiRequests(userData);
+      localStorage.setItem(tokenKey, token);
+      localStorage.setItem(userDataKey, JSON.stringify(userData));
+
+      if (onLoginSuccess) {
+        onLoginSuccess(userData, token);
+      }
     }
   };
 
