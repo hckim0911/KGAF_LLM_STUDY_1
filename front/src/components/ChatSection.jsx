@@ -23,7 +23,11 @@ const ChatSection = ({
       <div className={styles.header}>
         <div>
           <div className={styles.titleContainer}>
-            <h2 className={styles.title}>{currentChatRoom?.name || '비디오 분석'}</h2>
+            <h2 className={styles.title}>
+              {currentChatRoom?.name && currentChatRoom.name.length > 8
+                ? `${currentChatRoom.name.substring(0, 8)}...`
+                : currentChatRoom?.name || '비디오 분석'}
+            </h2>
             {chatRooms.length > 0 && (
               <button onClick={onShowChatRoomList} className={styles.roomButton} title='채팅방 목록'>
                 <MessageSquare size={16} />

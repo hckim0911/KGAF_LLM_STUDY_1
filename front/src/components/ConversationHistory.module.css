@@ -1,0 +1,271 @@
+.conversationHistory {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.count {
+  margin-left: 8px;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.loading, .error, .empty {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.empty p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.conversationList {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f9fafb;
+}
+
+.conversationList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversationList::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-radius: 3px;
+}
+
+.conversationList::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.conversationList::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.conversationItem {
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fefefe;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.conversationItem:hover {
+  background: #f8fafc;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 4px -1px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.conversationItem:hover .deleteButton {
+  opacity: 1;
+  visibility: visible;
+}
+
+.conversationItem:last-child {
+  margin-bottom: 0;
+}
+
+.conversationItem.dragging {
+  opacity: 0.5;
+  z-index: 10;
+}
+
+.conversationItem.dragOver {
+  border-color: #10b981;
+  background: #ecfdf5;
+  border-style: dashed;
+  border-width: 2px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.15);
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  justify-content: center;
+}
+
+.dragHandle:hover {
+  background-color: #f3f4f6;
+  transform: scale(1.05);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+  background-color: #e5e7eb;
+}
+
+.conversationItem:hover .dragHandle {
+  background-color: #f9fafb;
+}
+
+.gripIcon {
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.dragHandle:hover .gripIcon {
+  color: #374151;
+}
+
+.conversationItem.dragging .dragHandle {
+  cursor: grabbing;
+}
+
+.chatRoomActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.deleteButton {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.deleteButton:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.chatRoomLayout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #e5e7eb;
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.conversationContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.chatRoomName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messageCount {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.lastMessage {
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.conversationMeta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.imageIndicator {
+  font-size: 14px;
+}
+
+.timestamp {
+  font-weight: 500;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .conversationHistory {
+    padding: 16px;
+  }
+  
+  .header h3 {
+    font-size: 16px;
+  }
+  
+  .conversationItem {
+    padding: 10px;
+  }
+  
+  .question, .answer {
+    font-size: 12px;
+  }
+}

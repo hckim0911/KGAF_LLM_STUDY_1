@@ -9,3 +9,39 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Python 가상환경
+venv/
+__pycache__
+
+# 환경변수
+.env
+
+# Backend datas
+back/data/models/*
+back/data/db/*
+back/data/logs/*
+back/data/cache/*
+back/data/uploads/*
+
+# MongoDB 데이터
+*.db
+*.sqlite
+*.sqlite3
+
+# ML 모델 파일들
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.pkl
+*.joblib
+
+# 로그 파일들
+*.log
+
+# 임시 파일들
+tmp/
+temp/
+*.tmp

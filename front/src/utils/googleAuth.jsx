@@ -55,7 +55,7 @@ export const handleGoogleResponse = async (response, loginCallback) => {
         token: response.credential, // 서버에 저장할 토큰
       };
 
-      loginCallback(userData, response.credential);
+      await loginCallback(userData.id, userData.name, userData.email, response.credential);
     } catch (error) {
       console.error('Google 로그인 처리 중 오류:', error);
       alert('로그인 중 오류가 발생했습니다.');

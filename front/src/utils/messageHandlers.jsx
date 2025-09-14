@@ -2,6 +2,7 @@ import { callOpenAI } from './openai';
 import { getCurrentChatRoom, addMessageToChatRoom } from './chatRoomManager';
 import { saveChatRoom } from '../api/chat';
 import { saveConversation } from '../api/conversation';
+import { saveApiKey } from '../api/auth';
 
 // 메시지 전송 핸들러
 export const createSendMessageHandler = (
@@ -11,10 +12,10 @@ export const createSendMessageHandler = (
   setChatRooms,
   currentChatRoomId,
   isApiKeySet,
-  apiKey,
   videoFile,
   videoId,
-  setIsLoading
+  setIsLoading,
+  onConversationSaved = null
 ) => {
   return async () => {
     if (inputMessage.trim() === '' || !currentChatRoomId) {
@@ -54,7 +55,7 @@ export const createSendMessageHandler = (
     if (isApiKeySet) {
       setIsLoading(true);
       try {
-        const aiResponse = await callOpenAI(currentMessage, apiKey, videoFile, currentRoom.capturedFrame);
+        const aiResponse = await callOpenAI(currentMessage, videoFile, currentRoom.capturedFrame);
 
         const responseMessage = {
           id: currentRoom.messages.length + 2,
@@ -81,9 +82,15 @@ export const createSendMessageHandler = (
             currentMessage, // question
             aiResponse, // answer
             currentRoom.capturedFrame, // question_image
-            currentRoom.videoCurrentTime // timestamp
+            currentRoom.videoCurrentTime, // timestamp
+            videoId // video_id for shared frame storage
           );
           console.log('✅ Conversation saved successfully - now searchable!');
+          
+          // 대화 저장 성공 시 ConversationHistory 새로고침 트리거
+          if (onConversationSaved) {
+            onConversationSaved();
+          }
         } catch (error) {
           console.error('❌ Failed to save conversation to backend:', error);
         }
@@ -123,25 +130,32 @@ export const createKeyPressHandler = (sendMessageHandler) => {
 
 // API 키 제출 핸들러
 export const createApiKeySubmitHandler = (apiKey, setIsApiKeySet, chatRooms, setChatRooms, currentChatRoomId) => {
-  return () => {
+  return async () => {
     if (apiKey.trim()) {
-      setIsApiKeySet(true);
+      try {
+        // 백엔드에 API 키 저장
+        await saveApiKey(apiKey);
+        setIsApiKeySet(true);
 
-      // 현재 채팅방이 있는 경우에만 메시지 추가
-      if (currentChatRoomId && chatRooms.length > 0) {
-        const currentRoom = getCurrentChatRoom(chatRooms, currentChatRoomId);
-        if (currentRoom) {
-          const welcomeMessage = {
-            id: currentRoom.messages.length + 1,
-            text: 'OpenAI API가 연결되었습니다! 이제 영상에 대해 더 정확한 답변을 드릴 수 있습니다.',
-            sender: 'ai',
-            timestamp: new Date(),
-          };
+        // 현재 채팅방이 있는 경우에만 메시지 추가
+        if (currentChatRoomId && chatRooms.length > 0) {
+          const currentRoom = getCurrentChatRoom(chatRooms, currentChatRoomId);
+          if (currentRoom) {
+            const welcomeMessage = {
+              id: currentRoom.messages.length + 1,
+              text: 'OpenAI API가 연결되었습니다! 이제 영상에 대해 더 정확한 답변을 드릴 수 있습니다.',
+              sender: 'ai',
+              timestamp: new Date(),
+            };
 
-          setChatRooms((prev) => addMessageToChatRoom(prev, currentChatRoomId, welcomeMessage));
+            setChatRooms((prev) => addMessageToChatRoom(prev, currentChatRoomId, welcomeMessage));
+          }
         }
+        // 채팅방이 없는 경우에는 메시지를 추가하지 않음 (초기 상태)
+      } catch (error) {
+        console.error('Failed to save API key:', error);
+        alert('API 키 저장에 실패했습니다.');
       }
-      // 채팅방이 없는 경우에는 메시지를 추가하지 않음 (초기 상태)
     }
   };
 };

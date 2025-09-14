@@ -45,24 +45,25 @@ const VideoPlayer = ({
 
       {videoFile && (
         <div className={styles.fileInfo}>
-          <p className={styles.detail}>
-            <strong>파일명:</strong> {videoFile.name}
-          </p>
-          <p className={styles.detail}>
-            <strong>크기:</strong> {(videoFile.size / 1024 / 1024).toFixed(2)} MB
-          </p>
-          <p className={styles.detail}>
-            <strong>형식:</strong> {videoFile.type}
-          </p>
-        </div>
-      )}
-
-      {videoUrl && (
-        <div className={styles.controls}>
-          <button onClick={onVideoToggle} className={styles.playButton}>
-            {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-            {isPlaying ? '일시정지' : '재생'}
-          </button>
+          <div className={styles.fileDetails}>
+            <p className={styles.detail}>
+              <strong>파일명:</strong> {videoFile.name}
+            </p>
+            <p className={styles.detail}>
+              <strong>크기:</strong> {(videoFile.size / 1024 / 1024).toFixed(2)} MB
+            </p>
+            <p className={styles.detail}>
+              <strong>형식:</strong> {videoFile.type}
+            </p>
+          </div>
+          {videoUrl && (
+            <div className={styles.playButtonContainer}>
+              <button onClick={onVideoToggle} className={styles.playButton}>
+                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                {isPlaying ? '일시정지' : '재생'}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </>

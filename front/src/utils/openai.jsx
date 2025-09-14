@@ -1,60 +1,30 @@
-export const callOpenAI = async (message, apiKey, videoFile, capturedFrame) => {
+import api from '../api/axiosInstance';
+
+export const callOpenAI = async (message, videoFile, capturedFrame) => {
   try {
-    const messages = [
-      {
-        role: 'system',
-        content: `당신은 비디오 분석 전문 AI입니다. 사용자가 업로드한 영상에 대해 질문하면 도움이 되는 답변을 해주세요. 현재 업로드된 영상: ${videoFile ? videoFile.name : '없음'}${capturedFrame ? '. 현재 일시정지된 화면의 스크린샷이 함께 제공됩니다.' : ''}`,
-      },
-    ];
-
-    // 캡처된 프레임이 있으면 이미지와 함께 메시지 구성
-    if (capturedFrame) {
-      messages.push({
-        role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: message,
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: capturedFrame,
-              detail: 'high',
-            },
-          },
-        ],
-      });
-    } else {
-      messages.push({
-        role: 'user',
-        content: message,
-      });
-    }
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini', // gpt-4o-mini로 변경 (이미지도 지원하면서 더 저렴)
-        messages: messages,
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
+    const response = await api.post('/openai/chat', {
+      message: message,
+      captured_frame: capturedFrame,
+      video_file_name: videoFile ? videoFile.name : null
     });
 
-    if (!response.ok) {
-      throw new Error(`API 오류: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
+    return response.data.message;
   } catch (error) {
     console.error('OpenAI API 호출 오류:', error);
-    return '죄송합니다. API 호출 중 오류가 발생했습니다. API 키를 확인해주세요.';
+    
+    if (error.response) {
+      const errorMsg = error.response.data.detail || 'API 호출 중 오류가 발생했습니다.';
+      if (error.response.status === 400) {
+        return 'OpenAI API 키가 설정되지 않았습니다. API 키를 설정해주세요.';
+      } else if (error.response.status === 401) {
+        return 'OpenAI API 키가 올바르지 않습니다. API 키를 확인해주세요.';
+      } else if (error.response.status === 429) {
+        return 'OpenAI API 요청 한도가 초과되었습니다. 잠시 후 다시 시도해주세요.';
+      }
+      return errorMsg;
+    }
+    
+    return '죄송합니다. API 호출 중 오류가 발생했습니다.';
   }
 };
 
