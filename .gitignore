@@ -45,3 +45,4 @@ back/data/uploads/*
 tmp/
 temp/
 *.tmp
+back/.idea/
