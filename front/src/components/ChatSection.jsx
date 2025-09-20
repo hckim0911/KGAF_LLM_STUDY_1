@@ -102,7 +102,7 @@ const ChatSection = ({
 
 ChatSection.propTypes = {
   currentChatRoom: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name: PropTypes.string,
     messages: PropTypes.array,
     capturedFrame: PropTypes.string,

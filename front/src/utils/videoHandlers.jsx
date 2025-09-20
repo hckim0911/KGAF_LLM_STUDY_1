@@ -16,7 +16,7 @@ const handleManualPause = async (videoRef, videoUrl, videoId, chatRooms, setChat
     const frameTime = new Date();
     const videoCurrentTime = videoRef.current.currentTime;
 
-    const { room, isNew } = findOrCreateChatRoom(chatRooms, frameData, frameTime, videoCurrentTime);
+    const { room, isNew } = findOrCreateChatRoom(chatRooms, frameData, frameTime, videoCurrentTime, videoId);
 
     if (isNew) {
       setChatRooms((prev) => [...prev, room]);

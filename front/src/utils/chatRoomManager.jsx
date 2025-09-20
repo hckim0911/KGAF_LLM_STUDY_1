@@ -12,7 +12,7 @@ export const findChatRoomByTime = (chatRooms, videoCurrentTime) => {
 };
 
 // 새 채팅방 생성 (영상 시간 기반)
-export const createNewChatRoom = (capturedFrame, frameTime, videoCurrentTime) => {
+export const createNewChatRoom = (capturedFrame, frameTime, videoCurrentTime, videoId = null) => {
   return {
     id: Date.now(),
     name: `${formatVideoTime(videoCurrentTime)}`,
@@ -27,20 +27,22 @@ export const createNewChatRoom = (capturedFrame, frameTime, videoCurrentTime) =>
     capturedFrame,
     frameTime,
     videoCurrentTime,
+    videoId,
   };
 };
 
 // 채팅방 찾기 또는 생성
-export const findOrCreateChatRoom = (chatRooms, capturedFrame, frameTime, videoCurrentTime) => {
+export const findOrCreateChatRoom = (chatRooms, capturedFrame, frameTime, videoCurrentTime, videoId = null) => {
   // 먼저 같은 시간대의 채팅방이 있는지 확인
   const existingRoom = findChatRoomByTime(chatRooms, videoCurrentTime);
 
   if (existingRoom) {
-    return { room: existingRoom, isNew: false };
+    const roomWithVideo = existingRoom.videoId ? existingRoom : { ...existingRoom, videoId };
+    return { room: roomWithVideo, isNew: false };
   }
 
   // 없으면 새로 생성
-  const newRoom = createNewChatRoom(capturedFrame, frameTime, videoCurrentTime);
+  const newRoom = createNewChatRoom(capturedFrame, frameTime, videoCurrentTime, videoId);
   return { room: newRoom, isNew: true };
 };
 
