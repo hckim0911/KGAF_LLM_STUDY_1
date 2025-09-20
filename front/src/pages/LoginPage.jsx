@@ -6,7 +6,6 @@ const LoginPage = () => {
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <LocalLoginButton />
-        {/* <GoogleLoginButton /> */}
       </div>
     </div>
   );

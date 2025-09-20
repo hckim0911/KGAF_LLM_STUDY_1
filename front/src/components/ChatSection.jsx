@@ -41,11 +41,13 @@ const ChatSection = ({
           <button onClick={onShowSearchModal} className={styles.searchButton} title='통합 검색'>
             <Search size={20} />
           </button>
-          {!isApiKeySet && (
-            <button onClick={onShowApiModal} className={styles.apiButton} title='API 키 설정'>
-              <Key size={20} />
-            </button>
-          )}
+          <button
+            onClick={onShowApiModal}
+            className={`${styles.apiButton} ${isApiKeySet ? styles.apiButtonActive : ''}`}
+            title={isApiKeySet ? 'API 키 변경' : 'API 키 설정'}
+          >
+            <Key size={20} />
+          </button>
         </div>
       </div>
 
@@ -88,13 +90,11 @@ const ChatSection = ({
           </button>
         </div>
 
-        {!isApiKeySet && (
-          <div className={styles.setupLink}>
-            <button onClick={onShowApiModal} className={styles.linkButton}>
-              OpenAI API 키 설정하기
-            </button>
-          </div>
-        )}
+        <div className={styles.setupLink}>
+          <button onClick={onShowApiModal} className={styles.linkButton}>
+            {isApiKeySet ? 'OpenAI API 키 다시 설정하기' : 'OpenAI API 키 설정하기'}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -102,7 +102,7 @@ const ChatSection = ({
 
 ChatSection.propTypes = {
   currentChatRoom: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name: PropTypes.string,
     messages: PropTypes.array,
     capturedFrame: PropTypes.string,

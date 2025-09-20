@@ -73,22 +73,22 @@
 .conversationItem {
   padding: 12px;
   margin-bottom: 8px;
-  border: 1px solid #e5e7eb;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
   background: #fefefe;
   display: flex;
   align-items: center;
   gap: 8px;
   position: relative;
+  border: 1px solid #e5e7eb;
 }
 
 .conversationItem:hover {
   background: #f8fafc;
-  border-color: #3b82f6;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
   box-shadow: 0 2px 4px -1px rgba(59, 130, 246, 0.1);
-  transform: translateY(-1px);
 }
 
 .conversationItem:hover .deleteButton {
@@ -106,11 +106,9 @@
 }
 
 .conversationItem.dragOver {
-  border-color: #10b981;
   background: #ecfdf5;
-  border-style: dashed;
-  border-width: 2px;
-  transform: translateY(-2px);
+  outline: 2px dashed #10b981;
+  outline-offset: -2px;
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.15);
 }
 

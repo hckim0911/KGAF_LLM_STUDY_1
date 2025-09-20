@@ -1,4 +1,4 @@
-import api from './axiosInstance';
+import api from '../client';
 
 // 영상 업로드
 export const uploadVideo = async (videoFile, title, metadata = {}) => {

@@ -1,7 +1,7 @@
 import { captureVideoFrame } from './openai';
 import { findOrCreateChatRoom } from './chatRoomManager';
-import { uploadVideo } from '../api/video';
-import { saveChatRoom } from '../api/chat';
+import { uploadVideo } from '../api/media';
+import { saveChatRoom } from '../api/chatrooms';
 
 // 사용자 의도를 구분하기 위한 변수들
 let lastSeekTime = 0;
@@ -16,7 +16,7 @@ const handleManualPause = async (videoRef, videoUrl, videoId, chatRooms, setChat
     const frameTime = new Date();
     const videoCurrentTime = videoRef.current.currentTime;
 
-    const { room, isNew } = findOrCreateChatRoom(chatRooms, frameData, frameTime, videoCurrentTime);
+    const { room, isNew } = findOrCreateChatRoom(chatRooms, frameData, frameTime, videoCurrentTime, videoId);
 
     if (isNew) {
       setChatRooms((prev) => [...prev, room]);
