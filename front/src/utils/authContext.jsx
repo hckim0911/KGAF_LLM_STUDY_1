@@ -78,11 +78,6 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userDataKey);
 
-    // Google 로그아웃 (구글 로그인을 사용한 경우에만)
-    if (window.google?.accounts?.id && localStorage.getItem(tokenKey) !== 'local_token') {
-      window.google.accounts.id.disableAutoSelect();
-    }
-
     if (onLogoutSuccess) {
       onLogoutSuccess(currentUserData);
     }
