@@ -140,12 +140,19 @@ function MainPage() {
 
   const handleKeyPress = createKeyPressHandler(handleSendMessage);
 
+  const openApiKeyModal = () => {
+    setApiKey('');
+    setShowApiModal(true);
+  };
+
   const handleApiKeySubmit = createApiKeySubmitHandler(
     apiKey,
     setIsApiKeySet,
     chatRooms,
     setChatRooms,
-    currentChatRoomId
+    currentChatRoomId,
+    isApiKeySet,
+    () => setApiKey('')
   );
 
   const handleSwitchChatRoom = createSwitchChatRoomHandler(setCurrentChatRoomId, setShowChatRoomList);
@@ -233,7 +240,7 @@ function MainPage() {
               onInputChange={setInputMessage}
               onSendMessage={handleSendMessage}
               onKeyPress={handleKeyPress}
-              onShowApiModal={() => setShowApiModal(true)}
+              onShowApiModal={openApiKeyModal}
               onShowChatRoomList={() => setShowChatRoomList(true)}
               onShowSearchModal={() => setShowSearchModal(true)}
             />
@@ -251,7 +258,7 @@ function MainPage() {
           <div className={styles.loadingChat}>채팅방을 준비 중입니다...</div>
         )
       ) : (
-        <IntroSection isApiKeySet={isApiKeySet} onShowApiModal={() => setShowApiModal(true)} />
+          <IntroSection isApiKeySet={isApiKeySet} onShowApiModal={openApiKeyModal} />
       )}
 
       {showApiModal && (

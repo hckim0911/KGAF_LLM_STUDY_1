@@ -9,13 +9,10 @@ const IntroSection = ({ isApiKeySet, onShowApiModal }) => {
         <p>궁금한 장면에서 일시정지하면 해당 프레임에 대한 채팅방이 생성됩니다.</p>
 
         <div className={styles.apiSection}>
-          {!isApiKeySet ? (
-            <button onClick={onShowApiModal} className={styles.apiButton}>
-              OpenAI API 키 설정하기
-            </button>
-          ) : (
-            <div className={styles.apiStatus}>✅ OpenAI API 연결됨</div>
-          )}
+          {isApiKeySet && <div className={styles.apiStatus}>✅ OpenAI API 연결됨</div>}
+          <button onClick={onShowApiModal} className={styles.apiButton}>
+            {isApiKeySet ? 'OpenAI API 키 다시 설정하기' : 'OpenAI API 키 설정하기'}
+          </button>
         </div>
       </div>
     </div>
