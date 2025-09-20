@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getAllChatRooms, deleteChatRoom } from '../api/chat';
+import PropTypes from 'prop-types';
+import { getAllChatRooms, deleteChatRoom } from '../api/chatrooms';
 import { Trash2, GripVertical } from 'lucide-react';
 import styles from './ConversationHistory.module.css';
 
@@ -39,7 +40,7 @@ const ConversationHistory = ({ onSelectChatRoom, className = '', refreshTrigger 
       try {
         await deleteChatRoom(chatRoomId);
         // 로컬 상태에서도 제거
-        setChatRooms(prev => prev.filter(room => room.room_id !== chatRoomId));
+        setChatRooms((prev) => prev.filter((room) => room.room_id !== chatRoomId));
       } catch (error) {
         console.error('Failed to delete chat room:', error);
         alert('채팅방 삭제에 실패했습니다.');
@@ -89,7 +90,7 @@ const ConversationHistory = ({ onSelectChatRoom, className = '', refreshTrigger 
 
     const newChatRooms = [...chatRooms];
     const draggedChatRoom = newChatRooms[draggedItem];
-    
+
     // 간단한 배열 재정렬 로직
     newChatRooms.splice(draggedItem, 1); // 드래그된 아이템 제거
     newChatRooms.splice(dropIndex, 0, draggedChatRoom); // 새 위치에 삽입
@@ -161,9 +162,7 @@ const ConversationHistory = ({ onSelectChatRoom, className = '', refreshTrigger 
           {chatRooms.map((chatRoom, index) => (
             <div
               key={chatRoom._id || chatRoom.room_id}
-              className={`${styles.conversationItem} ${
-                draggedItem === index ? styles.dragging : ''
-              } ${
+              className={`${styles.conversationItem} ${draggedItem === index ? styles.dragging : ''} ${
                 dragOverItem === index ? styles.dragOver : ''
               }`}
               draggable
@@ -182,11 +181,7 @@ const ConversationHistory = ({ onSelectChatRoom, className = '', refreshTrigger 
               <div className={styles.chatRoomLayout}>
                 {chatRoom.captured_frame && (
                   <div className={styles.thumbnail}>
-                    <img 
-                      src={chatRoom.captured_frame} 
-                      alt="채팅방 썸네일"
-                      className={styles.thumbnailImage}
-                    />
+                    <img src={chatRoom.captured_frame} alt='채팅방 썸네일' className={styles.thumbnailImage} />
                   </div>
                 )}
                 <div className={styles.conversationContent}>
@@ -210,14 +205,12 @@ const ConversationHistory = ({ onSelectChatRoom, className = '', refreshTrigger 
               
               <div className={styles.chatRoomActions}>
                 <div className={styles.conversationMeta}>
-                  <span className={styles.timestamp}>
-                    {formatDate(chatRoom.updated_at || chatRoom.created_at)}
-                  </span>
+                  <span className={styles.timestamp}>{formatDate(chatRoom.updated_at || chatRoom.created_at)}</span>
                 </div>
                 <button
                   className={styles.deleteButton}
                   onClick={(e) => handleDeleteChatRoom(chatRoom.room_id, e)}
-                  title="채팅방 삭제"
+                  title='채팅방 삭제'
                 >
                   <Trash2 size={14} />
                 </button>
@@ -228,6 +221,12 @@ const ConversationHistory = ({ onSelectChatRoom, className = '', refreshTrigger 
       )}
     </div>
   );
+};
+
+ConversationHistory.propTypes = {
+  onSelectChatRoom: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  refreshTrigger: PropTypes.number,
 };
 
 export default ConversationHistory;
