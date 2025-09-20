@@ -1,30 +1,11 @@
-import api from './axiosInstance';
-
-// 채팅 저장
-export const saveChat = async (chatText, timestamp, username = null, metadata = {}) => {
-  // Input validation
-  if (!chatText || typeof chatText !== 'string') {
-    throw new Error(`Invalid chat text: ${typeof chatText} - ${chatText}`);
-  }
-
-  if (!chatText.trim()) {
-    throw new Error('Chat text cannot be empty');
-  }
-
-  const formData = new FormData();
-  formData.append('chat_text', chatText.trim());
-  formData.append('timestamp', timestamp.toString());
-  if (username) {
-    formData.append('username', username);
-  }
-  formData.append('metadata', JSON.stringify(metadata));
-
-  const response = await api.post('/chats/save', formData);
-  return response.data;
-};
+import api from '../client';
 
 // 채팅방 저장
 export const saveChatRoom = async (chatRoom, videoId) => {
+  if (!videoId) {
+    return { skipped: true };
+  }
+
   const requestBody = {
     room_id: chatRoom.id.toString(),
     name: chatRoom.name,

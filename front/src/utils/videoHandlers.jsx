@@ -1,7 +1,7 @@
 import { captureVideoFrame } from './openai';
 import { findOrCreateChatRoom } from './chatRoomManager';
-import { uploadVideo } from '../api/video';
-import { saveChatRoom } from '../api/chat';
+import { uploadVideo } from '../api/media';
+import { saveChatRoom } from '../api/chatrooms';
 
 // 사용자 의도를 구분하기 위한 변수들
 let lastSeekTime = 0;

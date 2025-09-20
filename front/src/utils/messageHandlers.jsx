@@ -1,8 +1,8 @@
 import { callOpenAI } from './openai';
 import { getCurrentChatRoom, addMessageToChatRoom } from './chatRoomManager';
-import { saveChatRoom } from '../api/chat';
-import { saveConversation } from '../api/conversation';
-import { saveApiKey } from '../api/auth';
+import { saveChatRoom } from '../api/chatrooms';
+import { saveConversation } from '../api/conversations';
+import { saveApiKey } from '../api/users';
 
 // 메시지 전송 핸들러
 export const createSendMessageHandler = (

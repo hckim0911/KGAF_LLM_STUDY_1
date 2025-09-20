@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../utils/authContext';
-import { getApiKeyStatus } from '../api/auth';
+import { getApiKeyStatus } from '../api/users';
 import VideoPlayer from '../components/VideoPlayer';
 import ChatSection from '../components/ChatSection';
 import ChatRoomList from '../components/ChatRoomList';
