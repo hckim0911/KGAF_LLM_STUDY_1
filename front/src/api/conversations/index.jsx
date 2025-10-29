@@ -1,4 +1,4 @@
-import api from './axiosInstance';
+import api from '../client';
 
 // 대화 저장 (질문 + 이미지 + 응답)
 export const saveConversation = async (question, answer, questionImage = null, timestamp = 0.0, videoId = null) => {

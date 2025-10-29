@@ -1,4 +1,4 @@
-import api from '../api/axiosInstance';
+import api from '../api/client';
 
 export const callOpenAI = async (message, videoFile, capturedFrame) => {
   try {

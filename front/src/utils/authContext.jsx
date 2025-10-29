@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { setUserForApiRequests } from '../api/axiosInstance';
-import { loginUser } from '../api/auth';
+import { setUserForApiRequests } from '../api/client';
+import { userLogin } from '../api/users';
 
 const AuthContext = createContext();
 
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
     
     try {
       // 백엔드에 로그인 정보 전송
-      await loginUser(id, name, email);
+      await userLogin({ id, name, email });
       
       setUser(userData);
       setUserForApiRequests(userData);
@@ -77,11 +77,6 @@ export const AuthProvider = ({ children, onLoginSuccess, onLogoutSuccess, initia
     setUserForApiRequests(null);
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userDataKey);
-
-    // Google 로그아웃 (구글 로그인을 사용한 경우에만)
-    if (window.google?.accounts?.id && localStorage.getItem(tokenKey) !== 'local_token') {
-      window.google.accounts.id.disableAutoSelect();
-    }
 
     if (onLogoutSuccess) {
       onLogoutSuccess(currentUserData);

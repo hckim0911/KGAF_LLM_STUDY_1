@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import api from '../client';
 
 export const searchRAG = async (query, topK = 10, contentType = null, threshold = 0.4) => {
   const formData = new FormData();
@@ -9,7 +9,7 @@ export const searchRAG = async (query, topK = 10, contentType = null, threshold 
     formData.append('content_type', contentType);
   }
 
-  const response = await axiosInstance.post('/search/text', formData, {
+  const response = await api.post('/search/text', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -23,7 +23,7 @@ export const ingestText = async (text, metadata = {}) => {
   formData.append('text', text);
   formData.append('metadata', JSON.stringify(metadata));
 
-  const response = await axiosInstance.post('/ingest/text', formData, {
+  const response = await api.post('/ingest/text', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -37,7 +37,7 @@ export const ingestImage = async (file, metadata = {}) => {
   formData.append('file', file);
   formData.append('metadata', JSON.stringify(metadata));
 
-  const response = await axiosInstance.post('/ingest/image', formData, {
+  const response = await api.post('/ingest/image', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

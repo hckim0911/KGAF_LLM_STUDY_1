@@ -2,8 +2,8 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Search, X } from 'lucide-react';
 import styles from './SearchModal.module.css';
-import { searchConversations } from '../api/conversation';
-import { searchRAG } from '../api/rag';
+import { searchConversations } from '../api/conversations';
+import { searchRAG } from '../api/search';
 
 const SearchModal = ({ onClose }) => {
   const [query, setQuery] = useState('');

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../utils/authContext';
-import { getApiKeyStatus } from '../api/auth';
+import { getApiKeyStatus } from '../api/users';
 import VideoPlayer from '../components/VideoPlayer';
 import ChatSection from '../components/ChatSection';
 import ChatRoomList from '../components/ChatRoomList';
@@ -25,7 +25,7 @@ import MainPageHeader from '../components/MainPageHeader';
 
 function MainPage() {
   const { user } = useAuth();
-  
+
   // 상태 관리
   const [chatRooms, setChatRooms] = useState([]);
   const [currentChatRoomId, setCurrentChatRoomId] = useState(null);
@@ -40,45 +40,33 @@ function MainPage() {
   const [showApiModal, setShowApiModal] = useState(false);
   const [showChatRoomList, setShowChatRoomList] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [selectedConversation, setSelectedConversation] = useState(null);
   const [conversationHistoryRefresh, setConversationHistoryRefresh] = useState(0);
-  
-  // 로그인 후 API 키 상태 확인 및 기본 채팅방 생성
+  const currentChatRoom = getCurrentChatRoom(chatRooms, currentChatRoomId);
+
+  // 로그인 후 API 키 상태 확인
   useEffect(() => {
     const checkApiKeyStatus = async () => {
-      if (user) {
-        try {
-          const status = await getApiKeyStatus();
-          if (status.has_api_key && status.api_key_validated) {
-            setIsApiKeySet(true);
-            console.log('저장된 API 키가 있습니다.');
-          }
-        } catch (error) {
-          console.error('Failed to check API key status:', error);
+      if (!user) {
+        setIsApiKeySet(false);
+        return;
+      }
+
+      try {
+        const status = await getApiKeyStatus();
+        if (status.has_api_key && status.api_key_validated) {
+          setIsApiKeySet(true);
+          console.log('저장된 API 키가 있습니다.');
+        } else {
+          setIsApiKeySet(false);
         }
+      } catch (error) {
+        console.error('Failed to check API key status:', error);
+        setIsApiKeySet(false);
       }
     };
-    
-    // 기본 채팅방 생성 (로그인 후)
-    const createDefaultChatRoom = () => {
-      if (user && chatRooms.length === 0) {
-        const defaultRoomId = Date.now().toString();
-        const defaultRoom = {
-          id: defaultRoomId,
-          name: '기본 채팅',
-          messages: [],
-          capturedFrame: null,
-          videoCurrentTime: 0,
-          timestamp: new Date(),
-        };
-        setChatRooms([defaultRoom]);
-        setCurrentChatRoomId(defaultRoomId);
-      }
-    };
-    
+
     checkApiKeyStatus();
-    createDefaultChatRoom();
-  }, [user, chatRooms.length]);
+  }, [user]);
 
   // refs
   const videoRef = useRef(null);
@@ -135,7 +123,7 @@ function MainPage() {
     videoFile,
     videoId,
     setIsLoading,
-    () => setConversationHistoryRefresh(prev => prev + 1)
+    () => setConversationHistoryRefresh((prev) => prev + 1)
   );
 
   const handleKeyPress = createKeyPressHandler(handleSendMessage);
@@ -145,8 +133,15 @@ function MainPage() {
     setIsApiKeySet,
     chatRooms,
     setChatRooms,
-    currentChatRoomId
+    currentChatRoomId,
+    isApiKeySet,
+    () => setApiKey('')
   );
+
+  const openApiKeyModal = () => {
+    setApiKey('');
+    setShowApiModal(true);
+  };
 
   const handleSwitchChatRoom = createSwitchChatRoomHandler(setCurrentChatRoomId, setShowChatRoomList);
 
@@ -158,35 +153,61 @@ function MainPage() {
   );
 
   const handleSelectChatRoom = (selectedChatRoom) => {
-    // 선택된 채팅방의 메시지를 현재 채팅방으로 로드
-    const currentRoom = getCurrentChatRoom(chatRooms, currentChatRoomId);
-    if (currentRoom) {
-      // 메시지의 timestamp를 Date 객체로 변환
-      const processedMessages = (selectedChatRoom.messages || []).map((message, index) => ({
-        ...message,
-        id: message.id || Date.now() + index, // ID가 없으면 생성
-        timestamp: message.timestamp instanceof Date 
-          ? message.timestamp 
-          : new Date(message.timestamp || Date.now())
-      }));
-      
-      // 선택된 채팅방의 메시지를 현재 채팅방에 로드
-      const updatedRoom = {
-        ...currentRoom,
-        messages: processedMessages,
-        name: selectedChatRoom.name,
-        capturedFrame: selectedChatRoom.captured_frame,
-        videoCurrentTime: selectedChatRoom.video_current_time || 0,
-      };
-      
-      const updatedChatRooms = chatRooms.map(room => 
-        room.id === currentChatRoomId ? updatedRoom : room
-      );
-      
-      setChatRooms(updatedChatRooms);
-      setSelectedConversation(selectedChatRoom);
+    if (!selectedChatRoom) {
+      return;
     }
+
+    const normalizedRoomId = selectedChatRoom.room_id || selectedChatRoom.id || Date.now().toString();
+
+    const processedMessages = (selectedChatRoom.messages || []).map((message, index) => ({
+      ...message,
+      id: message.id || `${normalizedRoomId}-msg-${index}`,
+      timestamp: message.timestamp instanceof Date ? message.timestamp : new Date(message.timestamp || Date.now()),
+    }));
+
+    const normalizedRoom = {
+      id: normalizedRoomId,
+      name: selectedChatRoom.name || '이전 채팅',
+      messages: processedMessages,
+      capturedFrame: selectedChatRoom.captured_frame || null,
+      frameTime: selectedChatRoom.frame_time ? new Date(selectedChatRoom.frame_time) : null,
+      videoCurrentTime: selectedChatRoom.video_current_time || 0,
+      videoId: selectedChatRoom.video_id || null,
+    };
+
+    setChatRooms((prevRooms) => {
+      const existingIndex = prevRooms.findIndex((room) => room.id === normalizedRoomId);
+      if (existingIndex !== -1) {
+        const updated = [...prevRooms];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          ...normalizedRoom,
+        };
+        return updated;
+      }
+      return [...prevRooms, normalizedRoom];
+    });
+
+    setVideoId(normalizedRoom.videoId || null);
+    setCurrentChatRoomId(normalizedRoomId);
+    setShowChatRoomList(false);
   };
+
+  useEffect(() => {
+    if (!user) {
+      setChatRooms([]);
+      setCurrentChatRoomId(null);
+      setVideoFile(null);
+      setVideoUrl(null);
+      setVideoId(null);
+      setInputMessage('');
+      setShowChatRoomList(false);
+      setShowSearchModal(false);
+      setIsPlaying(false);
+      setShowApiModal(false);
+      setApiKey('');
+    }
+  }, [user]);
 
   return (
     <div className={styles.container}>
@@ -208,10 +229,10 @@ function MainPage() {
             onVideoSeeking={handleVideoSeeking}
             onVideoSeeked={handleVideoSeeked}
           />
-          
+
           {/* 채팅방 기록을 비디오 플레이어 아래에 표시 */}
           {user && (
-            <ConversationHistory 
+            <ConversationHistory
               onSelectChatRoom={handleSelectChatRoom}
               className={styles.conversationHistorySection}
               refreshTrigger={conversationHistoryRefresh}
@@ -220,12 +241,11 @@ function MainPage() {
         </div>
       </div>
 
-      {/* 사용자가 로그인했으면 항상 채팅 기능 표시 */}
       {user ? (
-        currentChatRoomId ? (
+        currentChatRoom ? (
           <>
             <ChatSection
-              currentChatRoom={getCurrentChatRoom(chatRooms, currentChatRoomId)}
+              currentChatRoom={currentChatRoom}
               chatRooms={chatRooms}
               inputMessage={inputMessage}
               isApiKeySet={isApiKeySet}
@@ -233,11 +253,11 @@ function MainPage() {
               onInputChange={setInputMessage}
               onSendMessage={handleSendMessage}
               onKeyPress={handleKeyPress}
-              onShowApiModal={() => setShowApiModal(true)}
+              onShowApiModal={openApiKeyModal}
               onShowChatRoomList={() => setShowChatRoomList(true)}
               onShowSearchModal={() => setShowSearchModal(true)}
             />
-            {showChatRoomList && (
+            {showChatRoomList && currentChatRoom && (
               <ChatRoomList
                 chatRooms={chatRooms}
                 currentChatRoomId={currentChatRoomId}
@@ -248,10 +268,10 @@ function MainPage() {
             )}
           </>
         ) : (
-          <div className={styles.loadingChat}>채팅방을 준비 중입니다...</div>
+          <IntroSection isApiKeySet={isApiKeySet} onShowApiModal={openApiKeyModal} />
         )
       ) : (
-        <IntroSection isApiKeySet={isApiKeySet} onShowApiModal={() => setShowApiModal(true)} />
+        <IntroSection isApiKeySet={isApiKeySet} onShowApiModal={openApiKeyModal} />
       )}
 
       {showApiModal && (
